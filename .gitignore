@@ -1,3 +1,10 @@
+node_modules
+.env
+logs
+dist
+generated
+summary.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
