@@ -3,6 +3,7 @@ node_modules
 logs
 dist
 generated
+obsidian/
 summary.json
 
 # Byte-compiled / optimized / DLL files
