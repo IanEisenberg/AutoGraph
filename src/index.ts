@@ -5,7 +5,7 @@ const main = async () => {
   // setup dependencies
   const engine = new FakerEngine();
   const llm = new LLM(engine);
-  const processor = new InputProcessor(llm);
+  const processor = new InputProcessor(llm, {options: { perInstance: false }});
 
   // get input to process
   const inputs = processor.getInputs();

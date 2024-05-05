@@ -13,11 +13,11 @@ class InputProcessor {
    * InputProcessor constructor
    * @constructor
    */
-  constructor(llm: LLM) {
+  constructor(llm: LLM, exportOptions: {} = {}) {
     this.llm = llm;
     this.builder = new Builder();
     this.interpreter = new FakeInterpreter();
-    this.exporter = new Exporter();
+    this.exporter = new Exporter(exportOptions);
   }
   /**
    * getInputs function
