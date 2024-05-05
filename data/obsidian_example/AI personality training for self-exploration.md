@@ -1,0 +1,1 @@
+AI personality training for self-exploration

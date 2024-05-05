@@ -46,3 +46,17 @@ Often plays devil's advocate, exploring counterarguments and alternative perspec
 > "Women think about it, and we're like, wait, this is a bad deal." - Speaker C (on choosing not to have children)
 
 > "It's very easy to get stuck in that. We were busy giving everyone cars and freedom [to] Sunday drive. That's the thing. We didn't predict climate change would be the result." - Speaker A
+
+# Entities
+
+New Entities:
+
+[[AI as neutral third-party facilitator]]
+[[AI personality training for self-exploration]]
+[[AI courtship simulation for compatibility]]
+[[Introducing randomness into AI responses]]
+[[AI "offspring" with desired values]]
+
+Entities to update:
+
+[[AI as facilitation tool]]
