@@ -1,15 +1,30 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { faker } from '@faker-js/faker';
+import { parse, stringify } from 'yaml';
+
+import { LLM } from '../llm';
+import { Builder } from '../context';
 
 class Interpreter {
+
+  builder: Builder;
+  llm: LLM;
+
+  constructor(builder: Builder, llm: LLM) {
+    this.builder = builder;
+    this.llm = llm;
+  }
+
   topics(generatedTopics: string): string[] {
-    return [];
+    const data = parse(generatedTopics);
+    return data;
   }
   summary(generatedSummary: string): string {
-    return '';
+    return generatedSummary;
   }
 
   existingEntities(generatedSummary: string): string[] {
+    // 
     return [];
   }
 

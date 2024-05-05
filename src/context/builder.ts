@@ -33,13 +33,25 @@ class Builder {
     existing_entities: string[];
     raw_new_entities: string[];
   }): { system: string; user: string } {
+    // add entity_types
     const system = mergeData(
       getPrompt('generate_summary_system.hbs'),
       prompt_data,
     );
+    // add topic, description, raw_input
     const user = mergeData(getPrompt('generate_summary_user.hbs'), prompt_data);
     return { system, user };
   }
+
+  // generate idenitify entities
+  generateIdentityEntitiesPrompt() {
+    // entity_types
+    // previous_entities
+    // summary
+    const prompt_data = {};
+    
+  }
+
 
   generateUpdateEntityPrompt(prompt_data: { key: string, summaries: string[], existing_entity: string}): { system: string; user: string } {
     const system = mergeData(

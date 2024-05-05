@@ -18,6 +18,7 @@ specifiers:
   openai: ^4.40.2
   prettier: ^3.2.5
   ts-jest: ^29.1.2
+  yaml: ^2.4.2
   yaml-front-matter: ^4.1.1
 
 dependencies:
@@ -29,6 +30,7 @@ dependencies:
   jest: 29.7.0_@types+node@20.12.8
   js-yaml: 4.1.0
   openai: 4.40.2
+  yaml: 2.4.2
   yaml-front-matter: 4.1.1
 
 devDependencies:
@@ -3701,6 +3703,12 @@ packages:
     dependencies:
       commander: 6.2.1
       js-yaml: 3.14.1
+    dev: false
+
+  /yaml/2.4.2:
+    resolution: {integrity: sha512-B3VqDZ+JAg1nZpaEmWtTXUlBneoGx6CPM9b0TENK6aoSu5t73dItudwdgmi6tHlIZZId4dZ9skcAQ2UbcyAeVA==}
+    engines: {node: '>= 14'}
+    hasBin: true
     dev: false
 
   /yargs-parser/21.1.1:
