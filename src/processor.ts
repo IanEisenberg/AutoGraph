@@ -170,15 +170,27 @@ class InputProcessor {
     return summary_keys.map(key => topic_data[key].summary_text);
   }
 
-  updateEntity(topic_data: TopicData, key: string, summary_keys: string[], existing_entity: string): string {
-    // Implement the logic to update an entity
-    return '';
+  async updateEntity(topic_data: TopicData, key: string, summary_keys: string[], existing_entity: string): Promise<string> {
+    const summaries = 
+    summary_keys.map(key => topic_data[key].summary_text);
+    const prompt_data = { key, existing_entity, summaries }
+    // generate prompt
+    const { system, user } = this.builder.generateUpdateEntityPrompt(prompt_data);
+    // llm call
+    const updatedEntity = await this.llm.generate(system, user);
+    // return
+    return updatedEntity || "";
   }
 
-  createEntity(topic_data: TopicData, key: string, summary_keys: string[]): string {
-    // Implement the logic to create a new entity
-    // Use Domains
-    return '';
+  async createEntity(topic_data: TopicData, key: string, summary_keys: string[]): Promise<string> {
+    const summaries = 
+    summary_keys.map(key => topic_data[key].summary_text);
+    const prompt_data = { key, summaries }
+    // generate prompt
+    const { system, user } = this.builder.generateCreateEntityPrompt(prompt_data);
+    // llm call
+    const createdEntity = await this.llm.generate(system, user);
+    return createdEntity || "";
   }
 
   async fetchEntity(key: string): Promise<string> {
@@ -192,12 +204,12 @@ class InputProcessor {
 
     for (const key in existing_entities) {
       const existing_entity = await this.fetchEntity(key);
-      const updated_entity = this.updateEntity(topic_data, key, existing_entities[key], existing_entity);
+      const updated_entity = await this.updateEntity(topic_data, key, existing_entities[key], existing_entity);
       updated_entities[key] = updated_entity;
     }
 
     for (const key in new_entities) {
-      const created_entity = this.createEntity(topic_data, key, new_entities[key]);
+      const created_entity = await this.createEntity(topic_data, key, new_entities[key]);
       created_entities[key] = created_entity;
     }
 
@@ -209,11 +221,11 @@ class InputProcessor {
   }
 
   async exportUpdatedEntities(updated_entities: Record<string, string>): Promise<void> {
-    // Implement the logic to export updated entities
+    this.exporter.exportUpdatedEntities(updated_entities);
   }
 
   async exportCreatedEntities(created_entities: Record<string, string>): Promise<void> {
-    // Implement the logic to export created entities
+    this.exporter.exportUpdatedEntities(created_entities)
   }
 }
 

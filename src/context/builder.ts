@@ -40,6 +40,24 @@ class Builder {
     const user = mergeData(getPrompt('generate_summary_user.hbs'), prompt_data);
     return { system, user };
   }
+
+  generateUpdateEntityPrompt(prompt_data: { key: string, summaries: string[], existing_entity: string}): { system: string; user: string } {
+    const system = mergeData(
+      getPrompt('update_entity_system.hbs'),
+      prompt_data,
+    );
+    const user = mergeData(getPrompt('update_entity_user.hbs'), prompt_data);
+    return { system, user };
+  }
+
+  generateCreateEntityPrompt(prompt_data: {key: string, summaries: string[]}): { system: string; user: string } {
+    const system = mergeData(
+      getPrompt('create_entity_system.hbs'),
+      prompt_data,
+    );
+    const user = mergeData(getPrompt('create_entity_user.hbs'), prompt_data);
+    return { system, user };
+  }
 }
 
 export { Builder };

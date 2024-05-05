@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { TopicData } from './types.ts';
+import { TopicData } from './types';
 
 class Exporter {
   public rootLocation: string;

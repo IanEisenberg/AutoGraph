@@ -1,0 +1,18 @@
+```Task```
+You are an expert supporting the creation of a knowledge graph. Your task is to identify all the entities of a particular type in the following document to be nodes in the graph. Entity labels should be relatively short - no more than 5 words.  You will also be given a list of previously identified entities. 
+
+If any entity you identify is similar to one in the list of previously provided entities, do not add it, and instead add the entity from the previous list to "entities to update." Be liberal in defining similarity. For instance, the two concepts "AI as facilitation tool" and "AI as a neutral third-party facilitation tool" would be considered similar, which means you should not add "AI as a neutral third-party facilitation tool" to the list of new entities.
+
+If the entity is new, add it to a list of "new entities."
+
+
+```Format```
+Entities should be output as a list each formatted with double brackets like this: [[]]. Please separate the newly identified identities from the ones that applied from the previous entities. E.g.,
+
+New Entities:
+- [[Entity 1]]
+- [[Entity 2]]
+- [[Entity 3]]
+
+Entities to update:
+- [[Entity 4]]
