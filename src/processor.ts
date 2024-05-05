@@ -16,7 +16,7 @@ class InputProcessor {
   constructor(llm: LLM, exportOptions: {} = {}) {
     this.llm = llm;
     this.builder = new Builder();
-    this.interpreter = new FakeInterpreter();
+    this.interpreter = new Interpreter(this.builder, this.llm);
     this.exporter = new Exporter(exportOptions);
   }
   /**
@@ -24,8 +24,9 @@ class InputProcessor {
    * This is the raw text that will be processed
    * @returns {string} raw_input - The raw input that will be processed
    */
-  getInputs(): string {
-    const raw_input = 'hello world';
+  getInputs(fileLocation: string): string {
+    const fs = require('fs');
+    const raw_input = fs.readFileSync(fileLocation, 'utf-8');
     return raw_input;
   }
 
@@ -118,11 +119,15 @@ class InputProcessor {
     const topicsData: { [key: string]: any } = {};
     let raw_new_entities: string[] = [];
 
+    console.log("processTopics")
+    console.log(topics)
+
     for (const topic of topics) {
+      console.log(topic)
       const { summary_text, existing_entities_used, new_entities } =
         await this.generateSummary(
           raw_input,
-          topic,
+          (topic as any).topic_name,
           existing_entities,
           raw_new_entities,
         );
@@ -130,8 +135,8 @@ class InputProcessor {
         new Set(raw_new_entities.concat(new_entities)),
       );
 
-      topicsData[topic] = {
-        topic_input: topic,
+      topicsData[(topic as any).topic_name] = {
+        topic_input: (topic as any).topic_name,
         summary_text,
         existing_entities_used,
         new_entities,
