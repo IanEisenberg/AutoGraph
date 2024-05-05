@@ -17,4 +17,8 @@ Key points from the conversation include:
 The participants also discuss the role of technology in shaping human relationships and social structures throughout history, drawing parallels between the current AI revolution and past technological advancements. They emphasize the need for thoughtful consideration of the potential consequences of AI on society and the importance of fostering open dialogue about these issues.
 
 # Derived Summaries
-[[Ai and Human Connection.md]]
+[[Ai and Human Connection]]
+[[Relationship Dynamics and AI]]
+[[Ethical Considerations of AI]]
+[[AI and Self-Awareness]]
+[[Governance and Regulation of AI]]
