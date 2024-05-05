@@ -1,14 +1,15 @@
-TASK:
-Your task is to create an tagged (aka [[linked]]) summary from the unprocessed notes.
-You may be given a specific topic and description to focus the summary on.
-Be sure to include a yaml header with relevant data. Start the summary with a good title.
-Concepts and people should be linked, according to the markdown knowledge graph syntax.
-You are provided with known concepts and people, but you should identify any new ones by linking them.
-Tagging or linking a [[person]] or [[concept]] looks like this. Tag concepts and people liberally.
-Tag any topic that could be referenced again in another conversation. 
+```Task```
+Your task is to create a distillation from the unprocessed document with regards
+to the topic "{{topic}}". This topic is focused on "{{description}}".
 
-At the end of the summary include the following sections. The sections should be derived from the summary:
-- New Linked Concepts (All linked concepts - known concepts)
-- New Linked People (All linked people - known people)
-- Action items (a breakdown of action items including todos)
+This distillation should be comprehensive. Be sure to maintain the nuance and complexity of the original document. 
 
+Subsections: {{subsections}}
+
+Include the following sections:
+1. An overall summary of the topic within the unprocessed notes.
+2. For each subsection, provide a list for that subset.
+3. Selected quotes relevant to the topic
+
+```Format```
+The output should be in markdown. Start with the topic title then separate the sections with their own headers.
