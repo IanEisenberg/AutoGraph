@@ -17,15 +17,22 @@ class Interpreter {
 
   topics(generatedTopics: string): string[] {
     const data = parse(generatedTopics);
-    return data;
+    const { Topics } = data;
+    return Topics;
   }
   summary(generatedSummary: string): string {
     return generatedSummary;
   }
 
-  existingEntities(generatedSummary: string): string[] {
-    // 
-    return [];
+  async existingEntities(generatedSummary: string, entity_type: string, previous_entities: string[]): Promise<string[]> {
+    const prompt_data = {
+      entity_type,
+      previous_entities,
+      summary: generatedSummary
+    };
+    const { system, user } = this.builder.generateIdentityEntitiesPrompt(prompt_data);
+    const identifiedEntities = await this.llm.generate(system, user);
+    return identifiedEntities ? parse(identifiedEntities) : [];
   }
 
   newEntities(generatedSummary: string, raw_new_entities: string[]): string[] {
@@ -44,10 +51,10 @@ class FakeInterpreter extends Interpreter {
     return faker.lorem.paragraph();
   }
 
-  existingEntities(generatedSummary: string): string[] {
-    return Array(5)
+  async existingEntities(generatedSummary: string, entity_type: string, previous_entities: string[]): Promise<string[]> {
+    return Promise.resolve(Array(5)
       .fill(null)
-      .map(() => faker.hacker.noun());
+      .map(() => faker.hacker.noun()));
   }
 
   newEntities(generatedSummary: string, raw_new_entities: string[]): string[] {
