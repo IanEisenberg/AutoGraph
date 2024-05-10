@@ -14,6 +14,7 @@ function mergeData(template: string, data: { [key: string]: any }): string {
   const result = compiledTemplate(data);
   return result;
 }
+
 function formatEntityDescriptions(entityTypes: typeof entity_types): string {
   return `Entity Types and Descriptions:\n${entityTypes.map(entity => `**${entity.name}**: ${entity.description}`).join('\n')}`;
 }
@@ -44,7 +45,6 @@ class Builder {
     existing_entities: string[];
     raw_new_entities: string[];
   }): { system: string; user: string } {
-    // add entity_types
     const prompt_data = { ...prompt_globals, ...data };
 
     const system = mergeData(
@@ -62,7 +62,6 @@ class Builder {
     existing_entities: string[];
     raw_new_entities: string[];
   }): { system: string; user: string } {
-    // add entity_types
     const prompt_data = { ...prompt_globals, ...data };
 
     const system = mergeData(

@@ -233,9 +233,9 @@ class InputProcessor {
     // llm call
     const docSummary = await this.llm.generate(system, user);
 
-    const dashedLine = "\n------------------------\n";
+    const dashedLine = '\n------------------------\n';
     const modifiedDocSummary = `${docSummary}\n${dashedLine}\n${node_info}`;
-    return modifiedDocSummary || "";
+    return modifiedDocSummary || '';
   }
 
   async exportTopicSummaries(topics: TopicData): Promise<void> {

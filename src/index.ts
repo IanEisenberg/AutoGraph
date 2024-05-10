@@ -1,5 +1,5 @@
 import { InputProcessor } from './processor';
-import { OpenAIEngine, FakerEngine, LLM } from './llm';
+import { OpenAIEngine, OllamaEngine, FakerEngine, LLM } from './llm';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -34,7 +34,7 @@ const main = async () => {
   console.log('Created Entities:', created_entities);
 
   // Create final document node
-  const doc_summary = await processor.generateDocumentSummary(inputs, "TO BE FILLED with formatted topic_data");
+  const doc_summary = await processor.generateDocumentSummary(inputs, 'TO BE FILLED with formatted topic_data');
 
   //   // update data
   await processor.exportTopicSummaries(topic_data);
@@ -48,16 +48,23 @@ const main = async () => {
 
 const tester = async () => {
   // setup dependencies
-  const engine = new OpenAIEngine();
+//   const engine = new OpenAIEngine(); 
+  const engine = new OllamaEngine();
   const llm = new LLM(engine);
   const processor = new InputProcessor(llm,  { perInstance: true });
 
   // get input to process
-  const inputs = "the importance of decentralized data ownership versus centralized control, advocating for user control over personal data to prevent exploitation by corporations."
 
+  const file = 'data/sam_test.txt';
+  const inputs = processor.getInputs(file);
   // generate topics from input
   const topics = await processor.generateTopicsFromInput(inputs);
+  console.log(topics);
   console.log('Topics:', topics);
+
+  // process topics for each topic generate summaries
+//   const topic_data = await processor.processTopics(inputs, [topics[0]]);
+//   console.log('Topic Data:', topic_data);
 };
 
 tester()

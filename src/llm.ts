@@ -1,8 +1,38 @@
 import OpenAI from 'openai';
+import ollama from 'ollama';
 
 interface LLMEngine {
   generate(systemPrompt: string, userPrompt: string): Promise<string | null>;
 }
+
+
+class OllamaEngine implements LLMEngine {
+  async generate(systemPrompt: string, userPrompt: string): Promise<string | null> {
+    try {
+      const request = {
+        model: 'llama3',
+        prompt: userPrompt,
+        system: systemPrompt,
+        format: 'json',
+        options: {
+            vocab_only: true,
+        }
+      };
+
+      const response = await ollama.generate(request);
+      console.log(response)
+      if (response && response.response) {
+        return response.response;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Failed to generate response from Ollama:', error);
+      return null;
+    }
+  }
+}
+
 
 class OpenAIEngine implements LLMEngine {
   private openai: OpenAI;
@@ -49,4 +79,4 @@ class LLM {
   }
 }
 
-export { LLM, OpenAIEngine, FakerEngine };
+export { LLM, OpenAIEngine, OllamaEngine, FakerEngine };
