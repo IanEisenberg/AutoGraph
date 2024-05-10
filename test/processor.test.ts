@@ -29,7 +29,7 @@ describe('InputProcessor', () => {
     const topic = 'test topic';
     const existing_entities = ['entity1', 'entity2'];
     const raw_new_entities = ['new_entity1', 'new_entity2'];
-    const result = await processor.generateSummary(raw_input, topic, existing_entities, raw_new_entities);
+    const result = await processor.generateTopicSummary(raw_input, topic, existing_entities, raw_new_entities);
     expect(typeof result.summary_text).toBe('string');
     expect(Array.isArray(result.existing_entities_used)).toBe(true);
     expect(Array.isArray(result.new_entities)).toBe(true);

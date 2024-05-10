@@ -27,7 +27,7 @@ class Builder {
     return { system, user };
   }
 
-  generateSummaryPrompt(prompt_data: {
+  generateTopicSummaryPrompt(prompt_data: {
     raw_input: string;
     topic: string;
     existing_entities: string[];
@@ -35,11 +35,11 @@ class Builder {
   }): { system: string; user: string } {
     // add entity_types
     const system = mergeData(
-      getPrompt('generate_summary_system.hbs'),
+      getPrompt('generate_topic_summary_system.hbs'),
       prompt_data,
     );
     // add topic, description, raw_input
-    const user = mergeData(getPrompt('generate_summary_user.hbs'), prompt_data);
+    const user = mergeData(getPrompt('generate_topic_summary_user.hbs'), prompt_data);
     return { system, user };
   }
 
@@ -68,6 +68,17 @@ class Builder {
       prompt_data,
     );
     const user = mergeData(getPrompt('create_entity_user.hbs'), prompt_data);
+    return { system, user };
+  }
+
+  generateDocumentSummaryPrompt(prompt_data: { raw_input: string; }): { system: string; user: string } {
+    // add entity_types
+    const system = mergeData(
+      getPrompt('generate_doc_summary_system.hbs'),
+      prompt_data,
+    );
+    // add topic, description, raw_input
+    const user = mergeData(getPrompt('generate_doc_summary_user.hbs'), prompt_data);
     return { system, user };
   }
 }

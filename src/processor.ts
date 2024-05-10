@@ -68,7 +68,7 @@ class InputProcessor {
    * @returns {object} summaryData - The summary data including summary text, existing entities used, new entities, and topic
    */
 
-  async generateSummary(
+  async generateTopicSummary(
     raw_input: string,
     topic: string,
     existing_entities: string[],
@@ -84,7 +84,7 @@ class InputProcessor {
       existing_entities,
       raw_new_entities,
     };
-    const { system, user } = this.builder.generateSummaryPrompt(prompt_data);
+    const { system, user } = this.builder.generateTopicSummaryPrompt(prompt_data);
     const generatedSummary = await this.llm.generate(system, user);
     if (generatedSummary === null) {
       // log
@@ -114,6 +114,8 @@ class InputProcessor {
    * @param {string[]} topics - The topics for which the summary will be generated
    * @returns {object[]} topicsData - The topics data including topic input, summary text, existing entities used, and new entities
    */
+  
+  
   async processTopics(raw_input: string, topics: string[]): Promise<TopicData> {
     const existing_entities: string[] = [];
     const topicsData: { [key: string]: any } = {};
@@ -125,7 +127,7 @@ class InputProcessor {
     for (const topic of topics) {
       console.log(topic)
       const { summary_text, existing_entities_used, new_entities } =
-        await this.generateSummary(
+        await this.generateTopicSummary(
           raw_input,
           (topic as any).topic_name,
           existing_entities,
@@ -219,6 +221,20 @@ class InputProcessor {
     }
 
     return { updated_entities, created_entities };
+  }
+
+  async generateDocumentSummary(raw_input: string, node_info: string): Promise<string> {
+    const prompt_data = {
+      raw_input: raw_input,
+    };
+    // generate prompt
+    const { system, user } = this.builder.generateDocumentSummaryPrompt(prompt_data);
+    // llm call
+    const docSummary = await this.llm.generate(system, user);
+
+    const dashedLine = "------------------------";
+    const modifiedDocSummary = `${docSummary}\n${dashedLine}\n${node_info}`;
+    return modifiedDocSummary || "";
   }
 
   async exportTopicSummaries(topics: TopicData): Promise<void> {

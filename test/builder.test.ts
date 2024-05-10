@@ -22,7 +22,7 @@ describe('Builder', () => {
       existing_entities: ['Entity1', 'Entity2'],
       raw_new_entities: ['Entity3', 'Entity4']
     };
-    const result = builder.generateSummaryPrompt(prompt_data);
+    const result = builder.generateTopicSummaryPrompt(prompt_data);
     expect(result).toBeDefined();
     expect(result.system).toBeDefined();
     expect(result.user).toContain(prompt_data.raw_input);
