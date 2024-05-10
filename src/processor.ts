@@ -93,8 +93,10 @@ class InputProcessor {
     }
 
     const summary_text: string = this.interpreter.summary(generatedSummary);
+    const entity_type = '';
+    const previous_entities: any = [];
     const existing_entities_used: string[] =
-      this.interpreter.existingEntities(generatedSummary);
+      await this.interpreter.existingEntities(generatedSummary, entity_type, previous_entities );
     const new_entities: string[] = this.interpreter.newEntities(
       generatedSummary,
       raw_new_entities,
@@ -119,11 +121,11 @@ class InputProcessor {
     const topicsData: { [key: string]: any } = {};
     let raw_new_entities: string[] = [];
 
-    console.log("processTopics")
-    console.log(topics)
+    // console.log("processTopics")
+    // console.log(topics)
 
     for (const topic of topics) {
-      console.log(topic)
+      // console.log(topic)
       const { summary_text, existing_entities_used, new_entities } =
         await this.generateSummary(
           raw_input,
@@ -178,24 +180,24 @@ class InputProcessor {
   async updateEntity(topic_data: TopicData, key: string, summary_keys: string[], existing_entity: string): Promise<string> {
     const summaries = 
     summary_keys.map(key => topic_data[key].summary_text);
-    const prompt_data = { key, existing_entity, summaries }
+    const prompt_data = { key, existing_entity, summaries };
     // generate prompt
     const { system, user } = this.builder.generateUpdateEntityPrompt(prompt_data);
     // llm call
     const updatedEntity = await this.llm.generate(system, user);
     // return
-    return updatedEntity || "";
+    return updatedEntity || '';
   }
 
   async createEntity(topic_data: TopicData, key: string, summary_keys: string[]): Promise<string> {
     const summaries = 
     summary_keys.map(key => topic_data[key].summary_text);
-    const prompt_data = { key, summaries }
+    const prompt_data = { key, summaries };
     // generate prompt
     const { system, user } = this.builder.generateCreateEntityPrompt(prompt_data);
     // llm call
     const createdEntity = await this.llm.generate(system, user);
-    return createdEntity || "";
+    return createdEntity || '';
   }
 
   async fetchEntity(key: string): Promise<string> {
@@ -230,7 +232,7 @@ class InputProcessor {
   }
 
   async exportCreatedEntities(created_entities: Record<string, string>): Promise<void> {
-    this.exporter.exportUpdatedEntities(created_entities)
+    this.exporter.exportUpdatedEntities(created_entities);
   }
 }
 

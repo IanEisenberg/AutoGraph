@@ -43,13 +43,20 @@ class Builder {
     return { system, user };
   }
 
-  // generate idenitify entities
-  generateIdentityEntitiesPrompt() {
-    // entity_types
-    // previous_entities
-    // summary
-    const prompt_data = {};
-    
+  generateIdentityEntitiesPrompt(prompt_data: {
+    entity_type: string;
+    previous_entities: string[];
+    summary: string;
+  }): { system: string; user: string } {
+    const system = mergeData(
+      getPrompt('identify_entities_system.hbs'),
+      prompt_data,
+    );
+    const user = mergeData(
+      getPrompt('identify_entities_user.hbs'),
+      prompt_data,
+    );
+    return { system, user };
   }
 
 
