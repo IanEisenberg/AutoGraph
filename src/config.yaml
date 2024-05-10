@@ -1,7 +1,0 @@
-entity_types: 
-  - name: Creative and Unexpected Insights
-    description: Conversational insights encompassing unique and innovative perspectives or solutions that were not anticipated
-  - name: Disagreements
-    description: Topics that came up that people held different views on
-  - name: Primary Speakers
-    description: with descriptions of their persona and worldview derived from introduction

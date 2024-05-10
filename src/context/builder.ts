@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import Handlebars from 'handlebars';
+import { entity_types } from '../config.json';
 
 function getPrompt(filename: string): string {
   const filePath = path.join(__dirname, './prompts', filename);
@@ -13,10 +14,14 @@ function mergeData(template: string, data: { [key: string]: any }): string {
   const result = compiledTemplate(data);
   return result;
 }
+function formatEntityDescriptions(entityTypes: typeof entity_types): string {
+  return `Entity Types and Descriptions:\n${entityTypes.map(entity => `**${entity.name}**: ${entity.description}`).join('\n')}`;
+}
 
 const prompt_globals = {
   prefix: 'You are a very powerful LLM that builds knowledge graphs and powerful, concise summaries from unstructured data.',
   knowledge_graph_text: fs.readFileSync(path.join(__dirname, './prompts/knowledge-graph.txt'), 'utf-8'),
+  entity_descriptions: formatEntityDescriptions(entity_types),
 };
 
 class Builder {
