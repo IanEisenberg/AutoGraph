@@ -14,26 +14,34 @@ function mergeData(template: string, data: { [key: string]: any }): string {
   return result;
 }
 
+const prompt_globals = {
+  prefix: 'You are a very powerful LLM that builds knowledge graphs and powerful, concise summaries from unstructured data.',
+  knowledge_graph_text: require('./prompts/knowledge-graph.txt'),
+};
+
 class Builder {
-  generateTopicPrompt(prompt_data: { raw_input: string }): {
+  generateTopicPrompt(data: { raw_input: string }): {
     system: string;
     user: string;
   } {
+    const prompt_data = { ...prompt_globals, ...data };
     const system = mergeData(
       getPrompt('generate_topics_system.hbs'),
-      prompt_data,
+      {...prompt_globals,...prompt_data},
     );
     const user = mergeData(getPrompt('generate_topics_user.hbs'), prompt_data);
     return { system, user };
   }
 
-  generateTopicSummaryPrompt(prompt_data: {
+  generateTopicSummaryPrompt(data: {
     raw_input: string;
     topic: string;
     existing_entities: string[];
     raw_new_entities: string[];
   }): { system: string; user: string } {
     // add entity_types
+    const prompt_data = { ...prompt_globals, ...data };
+
     const system = mergeData(
       getPrompt('generate_topic_summary_system.hbs'),
       prompt_data,
@@ -43,11 +51,30 @@ class Builder {
     return { system, user };
   }
 
-  generateIdentityEntitiesPrompt(prompt_data: {
+  generateSummaryPrompt(data: {
+    raw_input: string;
+    topic: string;
+    existing_entities: string[];
+    raw_new_entities: string[];
+  }): { system: string; user: string } {
+    // add entity_types
+    const prompt_data = { ...prompt_globals, ...data };
+
+    const system = mergeData(
+      getPrompt('generate_topic_summary_system.hbs'),
+      prompt_data,
+    );
+    // add topic, description, raw_input
+    const user = mergeData(getPrompt('generate_topic_summary_user.hbs'), prompt_data);
+    return { system, user };
+  }
+
+  generateIdentityEntitiesPrompt(data: {
     entity_type: string;
     previous_entities: string[];
     summary: string;
   }): { system: string; user: string } {
+    const prompt_data = { ...prompt_globals, ...data };
     const system = mergeData(
       getPrompt('identify_entities_system.hbs'),
       prompt_data,
@@ -60,7 +87,8 @@ class Builder {
   }
 
 
-  generateUpdateEntityPrompt(prompt_data: { key: string, summaries: string[], existing_entity: string}): { system: string; user: string } {
+  generateUpdateEntityPrompt(data: { key: string, summaries: string[], existing_entity: string}): { system: string; user: string } {
+    const prompt_data = { ...prompt_globals, ...data };
     const system = mergeData(
       getPrompt('update_entity_system.hbs'),
       prompt_data,
@@ -69,7 +97,8 @@ class Builder {
     return { system, user };
   }
 
-  generateCreateEntityPrompt(prompt_data: {key: string, summaries: string[]}): { system: string; user: string } {
+  generateCreateEntityPrompt(data: {key: string, summaries: string[]}): { system: string; user: string } {
+    const prompt_data = { ...prompt_globals, ...data };
     const system = mergeData(
       getPrompt('create_entity_system.hbs'),
       prompt_data,

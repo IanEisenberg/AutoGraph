@@ -1,0 +1,14 @@
+MARKDOWN KNOWLEDGE GRAPHS:
+
+Here’s a short guide on the markdown syntax needed to create markdown knowledge graphs in Obsidian.md:
+
+- Use markdown syntax elements such as headings, bold, italic, etc. to format notes.
+- Use double square brackets [[ ]] to create a link between two notes. This will create a new note if it doesn’t exist already. You can also use aliases for your links by adding a vertical bar | followed by the alias text inside the brackets. For example, [[My Note|This is an alias]] will display as This is an alias but link to My Note.
+- Use hashtags # to create tags for your notes. You can use these tags to filter your notes by topic. You can also nest tags by using slashes / between them. For example, #books/fiction/sci-fi will create a tag hierarchy of books > fiction > sci-fi.
+- Use backticks `` to highlight code snippets.
+- You can also add metadata by using YAML in a block at the top of your file starting with --- and ending with ---. This metadata is meant to be machine readable and is not displayed in the note. You can use it to store information such as title, date, tags, etc. Be sure to use these when it makes sense. For example:
+---
+title: Obsidian Knowledge Graphs
+tags: [obsidian, markdown, guide]
+description: some text 
+---
