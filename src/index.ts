@@ -5,8 +5,8 @@ dotenv.config();
 
 const main = async () => {
   // setup dependencies
-//   const engine = new OpenAIEngine();
-  const engine = new FakerEngine();
+  const engine = new OpenAIEngine();
+//   const engine = new FakerEngine();
   const llm = new LLM(engine);
   const processor = new InputProcessor(llm,  { perInstance: true });
 
@@ -41,7 +41,22 @@ const main = async () => {
   console.log('Input Processor complete.');
 };
 
-main()
+
+const tester = async () => {
+  // setup dependencies
+  const engine = new OpenAIEngine();
+  const llm = new LLM(engine);
+  const processor = new InputProcessor(llm,  { perInstance: true });
+
+  // get input to process
+  const inputs = "the importance of decentralized data ownership versus centralized control, advocating for user control over personal data to prevent exploitation by corporations."
+
+  // generate topics from input
+  const topics = await processor.generateTopicsFromInput(inputs);
+  console.log('Topics:', topics);
+};
+
+tester()
   .then()
   .catch((err) => {
     console.error(err);

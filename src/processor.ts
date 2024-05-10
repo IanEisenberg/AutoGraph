@@ -54,7 +54,6 @@ class InputProcessor {
     // interpreter call
     topics = this.interpreter.topics(generatedTopics);
 
-    // Mock the functionality here
     return topics;
   }
 

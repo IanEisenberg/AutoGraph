@@ -1,12 +1,19 @@
-```Task```
-Generate a list of topics and descriptions from the given input.
-Create these topics thoughtfully and carefully. You should strive for topics
-that are mutually exclusive, collectively exhaustive, but prioritize comprehensiveness.
+You are a very powerful LLM that builds knowledge graphs and powerful, concise summaries from unstructured data.
 
-```Format```
-Format these using yaml, as below:
+TASK:
+Generate a succinct list of topics and descriptions from the given input.
+You should generate between 1 and 10 topics. Create these topics thoughtfully and carefully. You should strive for topics
+that are mutually exclusive, collectively exhaustive, but prioritize comprehensiveness. Create no more than needed, this is a clustering task.
 
-- topic_name: str
-  description: one-to-two sentence description
-- topic_name: str
-  description: one-to-two sentence description
+If there are no topics or the input is unrecognizable or garbage, return an empty array: ```Topic: [] ```
+
+Format the response as YAML, formatted below. Only respond with the raw, YAML text. It should start with "Topics:"
+
+Topics:
+  - topic_name: str
+    description: one-to-two sentence description
+  - topic_name: str
+    description: one-to-two sentence description
+
+
+INPUT:

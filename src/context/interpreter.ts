@@ -17,7 +17,8 @@ class Interpreter {
 
   topics(generatedTopics: string): string[] {
     const data = parse(generatedTopics);
-    return data;
+    const { Topics } = data;
+    return Topics;
   }
   summary(generatedSummary: string): string {
     return generatedSummary;
