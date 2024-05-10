@@ -16,7 +16,7 @@ function mergeData(template: string, data: { [key: string]: any }): string {
 
 const prompt_globals = {
   prefix: 'You are a very powerful LLM that builds knowledge graphs and powerful, concise summaries from unstructured data.',
-  knowledge_graph_text: require('./prompts/knowledge-graph.txt'),
+  knowledge_graph_text: fs.readFileSync(path.join(__dirname, './prompts/knowledge-graph.txt'), 'utf-8'),
 };
 
 class Builder {
