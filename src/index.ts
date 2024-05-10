@@ -6,7 +6,7 @@ dotenv.config();
 const main = async () => {
   // setup dependencies
   const engine = new OpenAIEngine();
-//   const engine = new FakerEngine();
+  //   const engine = new FakerEngine();
   const llm = new LLM(engine);
   const processor = new InputProcessor(llm,  { perInstance: true });
 
@@ -33,10 +33,14 @@ const main = async () => {
   console.log('Updated Entities:', updated_entities);
   console.log('Created Entities:', created_entities);
 
+  // Create final document node
+  const doc_summary = await processor.generateDocumentSummary(inputs, "TO BE FILLED with formatted topic_data");
+
   //   // update data
   await processor.exportTopicSummaries(topic_data);
-  await processor.exportUpdatedEntities(updated_entities);
-  await processor.exportCreatedEntities(created_entities);
+  await processor.exportEntities(updated_entities);
+  await processor.exportEntities(created_entities);
+  await processor.exportDocSummary(doc_summary);
 
   console.log('Input Processor complete.');
 };

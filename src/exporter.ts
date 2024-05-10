@@ -27,18 +27,15 @@ class Exporter {
     }
   }
 
-  async exportUpdatedEntities(updated_entities: Record<string, string>): Promise<void> {
-    for (const [entity, summary] of Object.entries(updated_entities)) {
+  async exportEntities(entities: Record<string, string>): Promise<void> {
+    for (const [entity, summary] of Object.entries(entities)) {
       await this.exportToFile(`${entity}.md`, summary);
     }
   }
 
-  async exportCreatedEntities(created_entities: Record<string, string>): Promise<void> {
-    for (const [entity, summary] of Object.entries(created_entities)) {
-      await this.exportToFile(`${entity}.md`, summary);
-    }
+  async exportDocSummary(doc_summary: string): Promise<void> {
+    await this.exportToFile('document_summary.md', doc_summary);
   }
-
 
 }
 

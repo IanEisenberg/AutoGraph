@@ -233,7 +233,7 @@ class InputProcessor {
     // llm call
     const docSummary = await this.llm.generate(system, user);
 
-    const dashedLine = "------------------------";
+    const dashedLine = "\n------------------------\n";
     const modifiedDocSummary = `${docSummary}\n${dashedLine}\n${node_info}`;
     return modifiedDocSummary || "";
   }
@@ -242,13 +242,14 @@ class InputProcessor {
     this.exporter.exportTopicSummaries(topics);
   }
 
-  async exportUpdatedEntities(updated_entities: Record<string, string>): Promise<void> {
-    this.exporter.exportUpdatedEntities(updated_entities);
+  async exportEntities(entities: Record<string, string>): Promise<void> {
+    this.exporter.exportEntities(entities);
   }
 
-  async exportCreatedEntities(created_entities: Record<string, string>): Promise<void> {
-    this.exporter.exportUpdatedEntities(created_entities);
+  async exportDocSummary(doc_summary: string): Promise<void> {
+    this.exporter.exportDocSummary(doc_summary);
   }
+
 }
 
 
