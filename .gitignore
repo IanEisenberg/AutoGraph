@@ -5,6 +5,7 @@ dist
 generated
 obsidian/
 summary.json
+data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

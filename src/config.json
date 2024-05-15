@@ -1,4 +1,5 @@
 {
+  "outputLocation": "./generated",
   "entity_types": [
     {
       "name": "insight",
@@ -13,7 +14,7 @@
       "description": "Descriptions of their persona and worldview derived from introduction"
     },
     {
-      "name": "occurance",
+      "name": "occurrence",
       "description": "A reference to a specific action or event that is especially important to the context"
     },
     {

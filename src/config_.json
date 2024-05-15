@@ -1,7 +1,8 @@
 {
+  "outputLocation": "./generated",
   "entity_types": [
     {
-      "name": "Concepts",
+      "name": "Creative and Unexpected Insights",
       "description": "Conversational insights encompassing unique and innovative perspectives or solutions that were not anticipated"
     },
     {
