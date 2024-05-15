@@ -2,6 +2,7 @@ import { LLM } from './llm';
 import { Builder, Interpreter, FakeInterpreter } from './context';
 import { Exporter } from './exporter';
 import { TopicData } from './types';
+import fs from 'fs';
 
 class InputProcessor {
   llm: LLM;
@@ -13,7 +14,7 @@ class InputProcessor {
    * InputProcessor constructor
    * @constructor
    */
-  constructor(llm: LLM, exportOptions: {} = {}) {
+  constructor(llm: LLM, exportOptions: any = {}) {
     this.llm = llm;
     this.builder = new Builder();
     this.interpreter = new Interpreter(this.builder, this.llm);
@@ -25,7 +26,6 @@ class InputProcessor {
    * @returns {string} raw_input - The raw input that will be processed
    */
   getInputs(fileLocation: string): string {
-    const fs = require('fs');
     const raw_input = fs.readFileSync(fileLocation, 'utf-8');
     return raw_input;
   }
@@ -79,14 +79,13 @@ class InputProcessor {
   }> {
     const prompt_data = {
       raw_input,
-      topic_name: topic.topic_name || "",
-      description: topic.description || "",
+      topic_name: topic.topic_name || '',
+      description: topic.description || '',
       existing_entities,
       raw_new_entities,
     };
     const { system, user } = this.builder.generateTopicSummaryPrompt(prompt_data);
     const generatedSummary = await this.llm.generate(system, user);
-    console.log(generatedSummary)
     if (generatedSummary === null) {
       // log
       console.log('Summary returned null');
@@ -98,8 +97,6 @@ class InputProcessor {
     const previous_entities: any = [];
     const entities =
       await this.interpreter.entities(generatedSummary, entity_type, previous_entities );
-    console.log("existing_entities_used")
-    console.log(entities)
 
     const { existing_entities: existing_entities_used, new_entities} = entities;
     return {
@@ -157,7 +154,7 @@ class InputProcessor {
    */
   async identifyEntities(topicsData: { [key: string]: any }): Promise<TopicData> {
     const existing_entities: string[] = [];
-    let raw_new_entities: string[] = [];
+    const raw_new_entities: string[] = [];
 
 
 
@@ -183,12 +180,12 @@ class InputProcessor {
     const new_entities: Record<string, string[]> = {};
 
     Object.entries(topic_data).forEach(([key, value]) => {
-      value.existing_entities_used.forEach((entity) => {
+      value.existing_entities_used?.forEach((entity) => {
         existing_entities[entity] = existing_entities[entity] || [];
         existing_entities[entity].push(key);
       });
 
-      value.new_entities.forEach((entity) => {
+      value.new_entities?.forEach((entity) => {
         new_entities[entity] = new_entities[entity] || [];
         new_entities[entity].push(key);
       });

@@ -7,8 +7,8 @@ class Exporter {
   public rootLocation: string;
   public runInstance: string;
 
-  constructor(options: { perInstance?: boolean } = {  perInstance: true }) {
-    this.rootLocation = process.env.OUTPUT_DIR || './generated';
+  constructor(options: {  outputDir?: string, perInstance?: boolean } = { outputDir: './generated', perInstance: true }) {
+    this.rootLocation = process.env.OUTPUT_DIR || options.outputDir || './generated';
     this.runInstance = options.perInstance ? `run-${Date.now()}/` : '';
   }
 

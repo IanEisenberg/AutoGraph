@@ -21,6 +21,7 @@ class Interpreter {
     // TODO: check for valid format!
     return Topics;
   }
+  
   summary(generatedSummary: string): string {
     const splitText = generatedSummary.split('ENTITIES:');
     return splitText[0];

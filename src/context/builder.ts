@@ -26,7 +26,7 @@ function formatKnownEntities() {
   return `Known Entities: none\n`;
 }
 
-const prefix = 'You are a very powerful LLM that builds knowledge graphs and powerful, concise summaries from unstructured data. Please provide any responses without any code block formatting, such as `md, and present the response as plain text.'
+const prefix = 'You are a very powerful LLM that builds knowledge graphs and powerful, concise summaries from unstructured data. Please provide any responses without any code block formatting, such as `md, and present the response as plain text.';
 
 const prompt_globals = {
   prefix,

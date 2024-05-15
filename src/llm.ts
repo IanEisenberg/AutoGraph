@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import ollama from 'ollama';
-
+import { logger } from './utils';
 interface LLMEngine {
   generate(systemPrompt: string, userPrompt: string): Promise<string | null>;
 }
@@ -15,12 +15,11 @@ class OllamaEngine implements LLMEngine {
         system: systemPrompt,
         format: 'json',
         options: {
-            vocab_only: true,
+          vocab_only: true,
         }
       };
 
       const response = await ollama.generate(request);
-      console.log(response)
       if (response && response.response) {
         return response.response;
       } else {
@@ -75,7 +74,10 @@ class LLM {
     systemPrompt: string,
     userPrompt: string,
   ): Promise<string | null> {
-    return this.engine.generate(systemPrompt, userPrompt);
+    const response = await this.engine.generate(systemPrompt, userPrompt);
+    logger.log('Prompt:', `System\n${systemPrompt}\nUser:\n${userPrompt}`);
+    logger.log('Response:', response);
+    return response;
   }
 }
 
