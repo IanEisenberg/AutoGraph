@@ -4,3 +4,5 @@
 
 
 AutoGraph takes unstructured data and outputs a knowledge graph in the form of markdown files to be visualized by Obsidian.
+
+Based on previous work done [here](https://github.com/skgbafa/llm-knowledge-graph)
