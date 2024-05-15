@@ -48,8 +48,8 @@ const main = async () => {
 
 const tester = async () => {
   // setup dependencies
-//   const engine = new OpenAIEngine(); 
-  const engine = new OllamaEngine();
+  const engine = new OpenAIEngine('gpt-4'); 
+//   const engine = new OllamaEngine();
   const llm = new LLM(engine);
   const processor = new InputProcessor(llm,  { perInstance: true });
 
@@ -57,14 +57,20 @@ const tester = async () => {
 
   const file = 'data/sam_test.txt';
   const inputs = processor.getInputs(file);
-  // generate topics from input
-  const topics = await processor.generateTopicsFromInput(inputs);
-  console.log(topics);
-  console.log('Topics:', topics);
+//   // generate topics from input
+//   const topics = await processor.generateTopicsFromInput(inputs);
+//   console.log(topics);
+//   console.log('Topics:', topics);
 
+  const topics_1 = [
+    {
+        topic_name: 'Need for Protocol over Network in AI',
+        description: 'Sam expresses the necessity of creating AI protocols over networks to foster innovation and diverse application, giving rise to products like Tiny Cloud.'
+      },
+  ]
   // process topics for each topic generate summaries
-//   const topic_data = await processor.processTopics(inputs, [topics[0]]);
-//   console.log('Topic Data:', topic_data);
+  const topic_data = await processor.processTopics(inputs, [topics_1[0]]);
+  console.log('Topic Data:', topic_data);
 };
 
 tester()

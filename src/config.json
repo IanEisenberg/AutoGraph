@@ -1,16 +1,28 @@
 {
   "entity_types": [
     {
-      "name": "Creative and Unexpected Insights",
+      "name": "entity",
       "description": "Conversational insights encompassing unique and innovative perspectives or solutions that were not anticipated"
     },
     {
-      "name": "Disagreements",
+      "name": "concept",
       "description": "Topics that came up that people held different views on"
     },
     {
-      "name": "Primary Speakers",
+      "name": "person",
       "description": "Descriptions of their persona and worldview derived from introduction"
+    },
+    {
+      "name": "occurance",
+      "description": "A reference to a specific action or event that is especially important to the context"
+    },
+    {
+      "name": "sentiment",
+      "description": "A reference to a sentiment or emotion that is especially important to the context"
+    },
+    {
+      "name": "timespace",
+      "description": "A reference to a time and/or place that is especially important to the context."
     }
   ]
 }

@@ -18,6 +18,7 @@ class Interpreter {
   topics(generatedTopics: string): string[] {
     const data = parse(generatedTopics);
     const { Topics } = data;
+    // TODO: check for valid format!
     return Topics;
   }
   summary(generatedSummary: string): string {

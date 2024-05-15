@@ -69,7 +69,7 @@ class InputProcessor {
 
   async generateTopicSummary(
     raw_input: string,
-    topic: string,
+    topic: any,
     existing_entities: string[],
     raw_new_entities: string[] = [],
   ): Promise<{
@@ -79,12 +79,14 @@ class InputProcessor {
   }> {
     const prompt_data = {
       raw_input,
-      topic,
+      topic_name: topic.topic_name || "",
+      description: topic.description || "",
       existing_entities,
       raw_new_entities,
     };
     const { system, user } = this.builder.generateTopicSummaryPrompt(prompt_data);
     const generatedSummary = await this.llm.generate(system, user);
+    console.log(generatedSummary)
     if (generatedSummary === null) {
       // log
       console.log('Summary returned null');
@@ -117,7 +119,7 @@ class InputProcessor {
    */
   
   
-  async processTopics(raw_input: string, topics: string[]): Promise<TopicData> {
+  async processTopics(raw_input: string, topics: any[]): Promise<TopicData> {
     const existing_entities: string[] = [];
     const topicsData: { [key: string]: any } = {};
     let raw_new_entities: string[] = [];
@@ -130,7 +132,7 @@ class InputProcessor {
       const { summary_text, existing_entities_used, new_entities } =
         await this.generateTopicSummary(
           raw_input,
-          (topic as any).topic_name,
+          topic,
           existing_entities,
           raw_new_entities,
         );
@@ -145,6 +147,28 @@ class InputProcessor {
         new_entities,
       };
     }
+
+    return topicsData;
+  }
+
+  /**
+   * identifyEntities function
+   * This function processes each topic to generate a summary
+   * @returns {object[]} topicsData - The topics data including topic input, summary text, existing entities used, and new entities
+   */
+  async identifyEntities(topicsData: { [key: string]: any }): Promise<TopicData> {
+    const existing_entities: string[] = [];
+    let raw_new_entities: string[] = [];
+
+
+
+    // topicsData[(topic as any).topic_name] = {
+    //   topic_input: (topic as any).topic_name,
+    //   summary_text,
+    //   existing_entities_used,
+    //   new_entities,
+    // };
+    
 
     return topicsData;
   }

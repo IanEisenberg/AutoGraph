@@ -41,7 +41,8 @@ class Builder {
 
   generateTopicSummaryPrompt(data: {
     raw_input: string;
-    topic: string;
+    topic_name: string;
+    description: string;
     existing_entities: string[];
     raw_new_entities: string[];
   }): { system: string; user: string } {
