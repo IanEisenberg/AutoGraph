@@ -26,8 +26,10 @@ function formatKnownEntities() {
   return `Known Entities: none\n`;
 }
 
+const prefix = 'You are a very powerful LLM that builds knowledge graphs and powerful, concise summaries from unstructured data. Please provide any responses without any code block formatting, such as `md, and present the response as plain text.'
+
 const prompt_globals = {
-  prefix: 'You are a very powerful LLM that builds knowledge graphs and powerful, concise summaries from unstructured data.',
+  prefix,
   knowledge_graph_text: fs.readFileSync(path.join(__dirname, './prompts/knowledge-graph.txt'), 'utf-8'),
   entity_descriptions: formatEntityDescriptions(entity_types),
   known_entities: formatKnownEntities(),
