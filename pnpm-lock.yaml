@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@faker-js/faker': ^8.4.1
+  '@types/cli-progress': ^3.11.5
   '@types/jest': ^29.5.12
   '@types/node': ^20.12.8
   '@typescript-eslint/eslint-plugin': ^6.21.0
@@ -38,6 +39,7 @@ dependencies:
   yaml-front-matter: 4.1.1
 
 devDependencies:
+  '@types/cli-progress': 3.11.5
   '@types/jest': 29.5.12
   '@types/node': 20.12.8
   '@typescript-eslint/eslint-plugin': 6.21.0_hmoy7n6el3fhw6yq6ztxxlygyu
@@ -709,6 +711,12 @@ packages:
     resolution: {integrity: sha512-WXCyOcRtH37HAUkpXhUduaxdm82b4GSlyTqajXviN4EfiuPgNYR109xMCKvpl6zPIpua0DGlMEDCq+g8EdoheQ==}
     dependencies:
       '@babel/types': 7.24.5
+
+  /@types/cli-progress/3.11.5:
+    resolution: {integrity: sha512-D4PbNRbviKyppS5ivBGyFO29POlySLmA2HyUFE4p5QGazAMM3CwkKWcvTl8gvElSuxRh6FPKL8XmidX873ou4g==}
+    dependencies:
+      '@types/node': 20.12.8
+    dev: true
 
   /@types/graceful-fs/4.1.9:
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}

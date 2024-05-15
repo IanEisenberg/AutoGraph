@@ -3,6 +3,9 @@ import { OpenAIEngine, OllamaEngine, FakerEngine, LLM } from './llm';
 import config from './config.json';
 import dotenv from 'dotenv';
 import { logger } from './utils';
+import cliProgress from 'cli-progress';
+import { Console } from 'console';
+
 dotenv.config();
 
 const main = async () => {
@@ -52,6 +55,12 @@ const main = async () => {
   console.log('Input Processor complete.');
 };
 
+// create new container
+const multibar = new cliProgress.MultiBar({
+  clearOnComplete: false,
+  hideCursor: true,
+  format: ' {bar} | {filename} | {value}/{total}',
+}, cliProgress.Presets.shades_grey);
 
 const tester = async () => {
   // setup dependencies
@@ -67,29 +76,42 @@ const tester = async () => {
   // get input to process
   const file = 'data/sam_test.txt';
   const inputs = processor.getInputs(file);
-  //   // generate topics from input
-  //   const topics = await processor.generateTopicsFromInput(inputs);
-  //   console.log(topics);
-  //   console.log('Topics:', topics);
 
-  const topics_1 = [
-    {
-      topic_name: 'Need for Protocol over Network in AI',
-      description: 'Sam expresses the necessity of creating AI protocols over networks to foster innovation and diverse application, giving rise to products like Tiny Cloud.'
-    },
-  ];
+  // add progress bars
+  const topicsBar = multibar.create(1, 0, { filename: 'Generating Topics' });
+
+
+  // fake data
+  // const topics = [
+  //   {
+  //     topic_name: 'Need for Protocol over Network in AI',
+  //     description: 'Sam expresses the necessity of creating AI protocols over networks to foster innovation and diverse application, giving rise to products like Tiny Cloud.'
+  //   },
+  // ];
+  // generate topics from input
+  const topics = await processor.generateTopicsFromInput(inputs);
+  topicsBar.increment(1);
+  logger.log('Topics', topics);
+
   // process topics for each topic generate summaries
-  const topic_data = await processor.processTopics(inputs, [topics_1[0]]);
+  const summariesBar = multibar.create(topics.length, 0, { filename: 'Generating Summaries' });
+  const updateSummaryProgress = () => summariesBar.increment(1);
+  const topic_data = await processor.processTopics(inputs, topics, updateSummaryProgress);
+
   logger.log('Topic Data:', topic_data);
-  
 
   // generate entity-summary map
   const { existing_entities, new_entities } = processor.generateEntitySummaryMap(topic_data);
   logger.log('Existing Entities:', existing_entities);
   logger.log('New Entities:', new_entities);
 
+  // progress calculation
+  const numEntities = Object.keys(existing_entities).length +  Object.keys(new_entities).length;
+  const entitiesBar = multibar.create(numEntities, 0, { filename: 'Generating Entity Summaries' });
+  const updateEntityProgress = () => entitiesBar.increment(1);
+
   // update each new or updated entity
-  const { updated_entities, created_entities } = await processor.processEntities(topic_data, existing_entities, new_entities);
+  const { updated_entities, created_entities } = await processor.processEntities(topic_data, existing_entities, new_entities, updateEntityProgress);
   logger.log('Updated Entities:', updated_entities);
   logger.log('Created Entities:', created_entities);
 
@@ -97,6 +119,9 @@ const tester = async () => {
   await processor.exportTopicSummaries(topic_data);
   await processor.exportEntities(created_entities);
 
+  // stop all bars
+  multibar.stop();
+  console.log("Program Complete")
 };
 
 tester()

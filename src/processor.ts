@@ -115,7 +115,7 @@ class InputProcessor {
    */
   
   
-  async processTopics(raw_input: string, topics: any[]): Promise<TopicData> {
+  async processTopics(raw_input: string, topics: any[], update = () => {}): Promise<TopicData> {
     const existing_entities: string[] = [];
     const topicsData: { [key: string]: any } = {};
     let raw_new_entities: string[] = [];
@@ -142,6 +142,7 @@ class InputProcessor {
         existing_entities_used,
         new_entities,
       };
+      update();
     }
 
     return topicsData;
@@ -226,7 +227,7 @@ class InputProcessor {
     return '';
   }
 
-  async processEntities(topic_data: TopicData, existing_entities: Record<string, string[]>, new_entities: Record<string, string[]>): Promise<{ updated_entities: Record<string, string>, created_entities: Record<string, string> }> {
+  async processEntities(topic_data: TopicData, existing_entities: Record<string, string[]>, new_entities: Record<string, string[]>, update = () => {}): Promise<{ updated_entities: Record<string, string>, created_entities: Record<string, string> }> {
     const updated_entities: Record<string, string> = {};
     const created_entities: Record<string, string> = {};
 
@@ -234,11 +235,13 @@ class InputProcessor {
       const existing_entity = await this.fetchEntity(key);
       const updated_entity = await this.updateEntity(topic_data, key, existing_entities[key], existing_entity);
       updated_entities[key] = updated_entity;
+      update();
     }
 
     for (const key in new_entities) {
       const created_entity = await this.createEntity(topic_data, key, new_entities[key]);
       created_entities[key] = created_entity;
+      update();
     }
 
     return { updated_entities, created_entities };
