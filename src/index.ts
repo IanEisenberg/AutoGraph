@@ -1,10 +1,10 @@
-import { InputProcessor } from './processor';
-import { OpenAIEngine, OllamaEngine, FakerEngine, LLM } from './llm';
-import config from './config.json';
-import dotenv from 'dotenv';
-import { logger } from './utils';
 import cliProgress from 'cli-progress';
-import { Console } from 'console';
+import dotenv from 'dotenv';
+
+import config from './config.json';
+import { OpenAIEngine, OllamaEngine, FakerEngine, LLM } from './llm';
+import { InputProcessor } from './processor';
+import { logger } from './utils';
 
 dotenv.config();
 
@@ -125,6 +125,7 @@ const tester = async () => {
   // update data
   await processor.exportTopicSummaries(topic_data);
   await processor.exportEntities(created_entities);
+  await processor.exportEntities(updated_entities);
 
   // stop all bars
   multibar.stop();
@@ -154,7 +155,7 @@ const tester2 = async () => {
   
     return `KNOWN ENTITIES:\n${formattedText}`;
   }
-  
+
   // setup dependencies
   const processorConfig = {
     outputDir: config.outputLocation,

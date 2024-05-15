@@ -261,7 +261,7 @@ class InputProcessor {
   }
 
   async fetchEntity(filePath: string): Promise<string> {
-    const fullPath = `${this.config.outputDir}/entity/${filePath}`;
+    const fullPath = `${this.config.outputDir}/entity/${filePath}.md`;
     try {
       return fs.promises.readFile(fullPath, 'utf-8');
     } catch (error) {

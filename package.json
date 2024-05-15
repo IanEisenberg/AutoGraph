@@ -8,7 +8,8 @@
     "build": "tsc",
     "lint": "eslint 'src/**/*.{js,ts}'",
     "format": "prettier --write 'src/**/*.{js,ts}'",
-    "test": "jest"
+    "test": "jest",
+    "cli": "ts-node src/cli.ts"
   },
   "keywords": [],
   "author": "",
