@@ -7,9 +7,9 @@ class Exporter {
   public rootLocation: string;
   public runInstance: string;
 
-  constructor(options: {  outputDir?: string, perInstance?: boolean } = { outputDir: './generated', perInstance: true }) {
-    this.rootLocation = process.env.OUTPUT_DIR || options.outputDir || './generated';
-    this.runInstance = options.perInstance ? `run-${Date.now()}/` : '';
+  constructor(config: {  outputDir?: string, perInstance?: boolean } = { outputDir: './generated', perInstance: true }) {
+    this.rootLocation = process.env.OUTPUT_DIR || config.outputDir || './generated';
+    this.runInstance = config.perInstance ? `run-${Date.now()}/` : '';
   }
 
   async exportToFile(filePath: string, data: string): Promise<void> {

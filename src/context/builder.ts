@@ -19,11 +19,26 @@ function formatEntityDescriptions(entityTypes: typeof entity_types): string {
   return `Entity Types and Descriptions:\n${entityTypes.map(entity => `**${entity.name}**: ${entity.description}`).join('\n')}`;
 }
 
+function formatKnownEntities(entities: string[]): string {
+  const groupedEntities: { [prefix: string]: string[] } = {};
 
-function formatKnownEntities() {
-  // passed file structure of entities
-  // eslint-disable-next-line quotes
-  return `Known Entities: none\n`;
+  entities.forEach(entity => {
+    const [prefix, name] = entity.split('/');
+    if (!groupedEntities[prefix]) {
+      groupedEntities[prefix] = [];
+    }
+    groupedEntities[prefix].push(name.replace('.md', ''));
+  });
+
+  let formattedText = '';
+
+  for (const prefix in groupedEntities) {
+    formattedText += `${prefix}: `;
+    formattedText += groupedEntities[prefix].join(', ');
+    formattedText += '\n';
+  }
+
+  return `KNOWN ENTITIES:\n${formattedText}`;
 }
 
 const prefix = 'You are a very powerful LLM that builds knowledge graphs and powerful, concise summaries from unstructured data. Please provide any responses without any code block formatting, such as `md, and present the response as plain text.';
@@ -32,7 +47,6 @@ const prompt_globals = {
   prefix,
   knowledge_graph_text: fs.readFileSync(path.join(__dirname, './prompts/knowledge-graph.txt'), 'utf-8'),
   entity_descriptions: formatEntityDescriptions(entity_types),
-  known_entities: formatKnownEntities(),
 };
 
 class Builder {
@@ -56,7 +70,11 @@ class Builder {
     existing_entities: string[];
     raw_new_entities: string[];
   }): { system: string; user: string } {
-    const prompt_data = { ...prompt_globals, ...data };
+    const prompt_data = {
+      ...prompt_globals,
+      ...data,
+      known_entities: formatKnownEntities(data.existing_entities),
+    };
 
     const system = mergeData(
       getPrompt('generate_topic_summary_system.hbs'),
@@ -73,7 +91,11 @@ class Builder {
     existing_entities: string[];
     raw_new_entities: string[];
   }): { system: string; user: string } {
-    const prompt_data = { ...prompt_globals, ...data };
+    const prompt_data = {
+      ...prompt_globals,
+      ...data,
+      known_entities: formatKnownEntities(data.existing_entities),
+    };
 
     const system = mergeData(
       getPrompt('generate_topic_summary_system.hbs'),
@@ -89,7 +111,11 @@ class Builder {
     previous_entities: string[];
     summary: string;
   }): { system: string; user: string } {
-    const prompt_data = { ...prompt_globals, ...data };
+    const prompt_data = {
+      ...prompt_globals,
+      ...data,
+      known_entities: formatKnownEntities(data.previous_entities),
+    };
     const system = mergeData(
       getPrompt('identify_entities_system.hbs'),
       prompt_data,
@@ -102,8 +128,12 @@ class Builder {
   }
 
 
-  generateUpdateEntityPrompt(data: { key: string, summaries: string[], existing_entity: string}): { system: string; user: string } {
-    const prompt_data = { ...prompt_globals, ...data };
+  generateUpdateEntityPrompt(data: { key: string, summaries: string[], existing_entity: string, known_entities: string[]}): { system: string; user: string } {
+    const prompt_data = {
+      ...prompt_globals,
+      ...data,
+      known_entities: formatKnownEntities(data.known_entities),
+    };
     const system = mergeData(
       getPrompt('update_entity_system.hbs'),
       prompt_data,
@@ -112,8 +142,12 @@ class Builder {
     return { system, user };
   }
 
-  generateCreateEntityPrompt(data: {key: string, summaries: string[]}): { system: string; user: string } {
-    const prompt_data = { ...prompt_globals, ...data };
+  generateCreateEntityPrompt(data: {key: string, summaries: string[], known_entities: string[]}): { system: string; user: string } {
+    const prompt_data = {
+      ...prompt_globals,
+      ...data,
+      known_entities: formatKnownEntities(data.known_entities),
+    };
     const system = mergeData(
       getPrompt('create_entity_system.hbs'),
       prompt_data,

@@ -25,12 +25,15 @@ const main = async () => {
   const inputs = processor.getInputs(file);
   //   console.log('Inputs:', inputs);
 
+  // retrieve entities
+  const retrieved_entities = await processor.getExistingEntities(processorConfig.outputDir);
+
   // generate topics from input
   const topics = await processor.generateTopicsFromInput(inputs);
   console.log('Topics:', topics);
 
   // process topics for each topic generate summaries
-  const topic_data = await processor.processTopics(inputs, topics);
+  const topic_data = await processor.processTopics(inputs, topics, retrieved_entities);
   console.log('Topic Data:', topic_data);
 
   // generate entitity-summary map
@@ -39,7 +42,7 @@ const main = async () => {
   console.log('New Entities:', new_entities);
 
   // update each new or updated entity
-  const { updated_entities, created_entities } = await processor.processEntities(topic_data, existing_entities, new_entities);
+  const { updated_entities, created_entities } = await processor.processEntities(topic_data, existing_entities, new_entities, retrieved_entities);
   console.log('Updated Entities:', updated_entities);
   console.log('Created Entities:', created_entities);
 
@@ -82,21 +85,25 @@ const tester = async () => {
 
 
   // fake data
-  // const topics = [
-  //   {
-  //     topic_name: 'Need for Protocol over Network in AI',
-  //     description: 'Sam expresses the necessity of creating AI protocols over networks to foster innovation and diverse application, giving rise to products like Tiny Cloud.'
-  //   },
-  // ];
+  const topics = [
+    {
+      topic_name: 'Need for Protocol over Network in AI',
+      description: 'Sam expresses the necessity of creating AI protocols over networks to foster innovation and diverse application, giving rise to products like Tiny Cloud.'
+    },
+  ];
   // generate topics from input
-  const topics = await processor.generateTopicsFromInput(inputs);
+  // const topics = await processor.generateTopicsFromInput(inputs);
   topicsBar.increment(1);
   logger.log('Topics', topics);
+
+  // retrieve entities
+  const retrieved_entities = await processor.getExistingEntities(processorConfig.outputDir);
+
 
   // process topics for each topic generate summaries
   const summariesBar = multibar.create(topics.length, 0, { filename: 'Generating Summaries' });
   const updateSummaryProgress = () => summariesBar.increment(1);
-  const topic_data = await processor.processTopics(inputs, topics, updateSummaryProgress);
+  const topic_data = await processor.processTopics(inputs, topics, retrieved_entities, updateSummaryProgress);
 
   logger.log('Topic Data:', topic_data);
 
@@ -111,7 +118,7 @@ const tester = async () => {
   const updateEntityProgress = () => entitiesBar.increment(1);
 
   // update each new or updated entity
-  const { updated_entities, created_entities } = await processor.processEntities(topic_data, existing_entities, new_entities, updateEntityProgress);
+  const { updated_entities, created_entities } = await processor.processEntities(topic_data, existing_entities, new_entities, retrieved_entities, updateEntityProgress);
   logger.log('Updated Entities:', updated_entities);
   logger.log('Created Entities:', created_entities);
 
@@ -121,10 +128,58 @@ const tester = async () => {
 
   // stop all bars
   multibar.stop();
-  console.log("Program Complete")
+  console.log('Program Complete');
 };
 
-tester()
+
+
+const tester2 = async () => {
+  function formatKnownEntities(entities: string[]): string {
+    const groupedEntities: { [prefix: string]: string[] } = {};
+  
+    entities.forEach(entity => {
+      const [prefix, name] = entity.split('/');
+      if (!groupedEntities[prefix]) {
+        groupedEntities[prefix] = [];
+      }
+      groupedEntities[prefix].push(name.replace('.md', ''));
+    });
+  
+    let formattedText = '';
+    for (const prefix in groupedEntities) {
+      formattedText += `${prefix}: `;
+      formattedText += groupedEntities[prefix].join(', ');
+      formattedText += '\n';
+    }
+  
+    return `KNOWN ENTITIES:\n${formattedText}`;
+  }
+  
+  // setup dependencies
+  const processorConfig = {
+    outputDir: config.outputLocation,
+    perInstance: false,
+  };
+
+  const engine = new OpenAIEngine('gpt-4o'); 
+  const llm = new LLM(engine);
+  const processor = new InputProcessor(llm, processorConfig);
+
+  // retrieve data
+  const existing_entities = await processor.getExistingEntities(processorConfig.outputDir);
+  logger.log('existing_entities', existing_entities);
+
+  const entity_data = await processor.fetchEntity(existing_entities[0]);
+  logger.log('entity_data', entity_data);
+
+  const formatted = formatKnownEntities(existing_entities);
+  logger.log(formatted);
+
+
+};
+
+
+tester2()
   .then()
   .catch((err) => {
     console.error(err);

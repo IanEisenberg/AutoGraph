@@ -3,23 +3,29 @@ import { Builder, Interpreter, FakeInterpreter } from './context';
 import { Exporter } from './exporter';
 import { TopicData } from './types';
 import fs from 'fs';
+import path from 'path';
 
 class InputProcessor {
   llm: LLM;
   builder: Builder;
   interpreter: Interpreter;
   exporter: Exporter;
+  config: {
+    outputDir: string
+  };
 
   /**
    * InputProcessor constructor
    * @constructor
    */
-  constructor(llm: LLM, exportOptions: any = {}) {
+  constructor(llm: LLM, config: any = {}) {
+    this.config = config;
     this.llm = llm;
     this.builder = new Builder();
     this.interpreter = new Interpreter(this.builder, this.llm);
-    this.exporter = new Exporter(exportOptions);
+    this.exporter = new Exporter(config);
   }
+
   /**
    * getInputs function
    * This is the raw text that will be processed
@@ -114,9 +120,7 @@ class InputProcessor {
    * @returns {object[]} topicsData - The topics data including topic input, summary text, existing entities used, and new entities
    */
   
-  
-  async processTopics(raw_input: string, topics: any[], update = () => {}): Promise<TopicData> {
-    const existing_entities: string[] = [];
+  async processTopics(raw_input: string, topics: any[], existing_entities: string[] = [], update = () => {}): Promise<TopicData> {
     const topicsData: { [key: string]: any } = {};
     let raw_new_entities: string[] = [];
 
@@ -199,10 +203,10 @@ class InputProcessor {
     return summary_keys.map(key => topic_data[key].summary_text);
   }
 
-  async updateEntity(topic_data: TopicData, key: string, summary_keys: string[], existing_entity: string): Promise<string> {
+  async updateEntity(topic_data: TopicData, key: string, summary_keys: string[], existing_entity: string, known_entities: string[]): Promise<string> {
     const summaries = 
     summary_keys.map(key => topic_data[key].summary_text);
-    const prompt_data = { key, existing_entity, summaries };
+    const prompt_data = { key, existing_entity, summaries, known_entities };
     // generate prompt
     const { system, user } = this.builder.generateUpdateEntityPrompt(prompt_data);
     // llm call
@@ -211,10 +215,10 @@ class InputProcessor {
     return updatedEntity || '';
   }
 
-  async createEntity(topic_data: TopicData, key: string, summary_keys: string[]): Promise<string> {
+  async createEntity(topic_data: TopicData, key: string, summary_keys: string[], known_entities: string[]): Promise<string> {
     const summaries = 
     summary_keys.map(key => topic_data[key].summary_text);
-    const prompt_data = { key, summaries };
+    const prompt_data = { key, summaries, known_entities };
     // generate prompt
     const { system, user } = this.builder.generateCreateEntityPrompt(prompt_data);
     // llm call
@@ -222,24 +226,63 @@ class InputProcessor {
     return createdEntity || '';
   }
 
-  async fetchEntity(key: string): Promise<string> {
-    // Implement the logic to fetch an entity
-    return '';
+  async getExistingEntities(workingDir: string): Promise<string[]> {
+    const entitiesDir = path.join(workingDir, 'entity');
+    let entityFiles: string[] = [];
+
+    const getAllMdFiles = (dir: string): string[] => {
+      const results: string[] = [];
+      const stack: string[] = [dir];
+
+      while (stack.length > 0) {
+        const currentDir = stack.pop()!;
+        const list = fs.readdirSync(currentDir);
+
+        list.forEach((file) => {
+          const filePath = path.join(currentDir, file);
+          const stat = fs.statSync(filePath);
+
+          if (stat && stat.isDirectory()) {
+            stack.push(filePath);
+          } else if (file.endsWith('.md')) {
+            results.push(path.relative(entitiesDir, filePath));
+          }
+        });
+      }
+      return results.sort((a, b) => a.localeCompare(b));
+    };
+
+    try {
+      entityFiles = getAllMdFiles(entitiesDir);
+    } catch (error) {
+      console.error(`Error reading directory ${entitiesDir}:`, error);
+    }
+    return entityFiles;
   }
 
-  async processEntities(topic_data: TopicData, existing_entities: Record<string, string[]>, new_entities: Record<string, string[]>, update = () => {}): Promise<{ updated_entities: Record<string, string>, created_entities: Record<string, string> }> {
+  async fetchEntity(filePath: string): Promise<string> {
+    const fullPath = `${this.config.outputDir}/entity/${filePath}`;
+    try {
+      return fs.promises.readFile(fullPath, 'utf-8');
+    } catch (error) {
+      console.error(`Error reading file ${fullPath}:`, error);
+      return '';
+    }
+  }
+
+  async processEntities(topic_data: TopicData, existing_entities: Record<string, string[]>, new_entities: Record<string, string[]>, known_entities: string[], update = () => {}): Promise<{ updated_entities: Record<string, string>, created_entities: Record<string, string> }> {
     const updated_entities: Record<string, string> = {};
     const created_entities: Record<string, string> = {};
 
     for (const key in existing_entities) {
       const existing_entity = await this.fetchEntity(key);
-      const updated_entity = await this.updateEntity(topic_data, key, existing_entities[key], existing_entity);
+      const updated_entity = await this.updateEntity(topic_data, key, existing_entities[key], existing_entity, known_entities);
       updated_entities[key] = updated_entity;
       update();
     }
 
     for (const key in new_entities) {
-      const created_entity = await this.createEntity(topic_data, key, new_entities[key]);
+      const created_entity = await this.createEntity(topic_data, key, new_entities[key], known_entities);
       created_entities[key] = created_entity;
       update();
     }
@@ -274,7 +317,5 @@ class InputProcessor {
   }
 
 }
-
-
 
 export { InputProcessor, TopicData };
