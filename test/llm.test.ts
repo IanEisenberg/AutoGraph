@@ -1,6 +1,18 @@
 import { LLM, OpenAIEngine, FakerEngine } from '../src/llm';
 
 
+// Mocking fs and path for Jest
+jest?.mock('fs', () => ({
+  existsSync: jest.fn(),
+  mkdirSync: jest.fn(),
+  appendFileSync: jest.fn(),
+}));
+
+jest?.mock('path', () => ({
+  join: jest.fn().mockReturnValue('mocked/log/path.txt'),
+}));
+
+
 describe('LLM', () => {
   let llm: LLM;
   let systemPrompt: string;

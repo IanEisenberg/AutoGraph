@@ -57,7 +57,7 @@ const tester = async () => {
   // setup dependencies
   const processorConfig = {
     outputDir: config.outputLocation,
-    perInstance: true,
+    perInstance: false,
   };
 
   const engine = new OpenAIEngine('gpt-4o'); 
