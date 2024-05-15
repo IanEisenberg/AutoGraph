@@ -19,10 +19,18 @@ function formatEntityDescriptions(entityTypes: typeof entity_types): string {
   return `Entity Types and Descriptions:\n${entityTypes.map(entity => `**${entity.name}**: ${entity.description}`).join('\n')}`;
 }
 
+
+function formatKnownEntities() {
+  // passed file structure of entities
+  // eslint-disable-next-line quotes
+  return `Known Entities: none\n`;
+}
+
 const prompt_globals = {
   prefix: 'You are a very powerful LLM that builds knowledge graphs and powerful, concise summaries from unstructured data.',
   knowledge_graph_text: fs.readFileSync(path.join(__dirname, './prompts/knowledge-graph.txt'), 'utf-8'),
   entity_descriptions: formatEntityDescriptions(entity_types),
+  known_entities: formatKnownEntities(),
 };
 
 class Builder {

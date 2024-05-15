@@ -14,12 +14,14 @@ Tag any topic that could be referenced again in another conversation.
 
 
 {{entity_descriptions}}
-
+{{known_entities}}
 
 At the end of the summary include the following sections. The sections should be derived from the summary and populated according to the following entity descriptions:
-This should be done in the following YAML Format
+New Entities are entities that are not in the "Known Entities:" section. 
 
-ENTITIES
+This should be done in the following YAML format, starting with the word "ENTITIES:". Do not deviate from this format as it will cause parsing errors.
+
+ENTITIES:
 new_entities:
     - "entity_type/New Entity 1"
     - "entity_type/New Entity 2"

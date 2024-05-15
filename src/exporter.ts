@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { TopicData } from './types';
 
+// TODO: Make sure exporter doesn't have unintentional name collisions
 class Exporter {
   public rootLocation: string;
   public runInstance: string;
@@ -11,25 +12,26 @@ class Exporter {
     this.runInstance = options.perInstance ? `run-${Date.now()}/` : '';
   }
 
-  async exportToFile(filename: string, data: string): Promise<void> {
-    const dir = path.join(this.rootLocation, this.runInstance);
+  async exportToFile(filePath: string, data: string): Promise<void> {
+    const fullPath = path.join(this.rootLocation, this.runInstance, filePath);
+    const dir = path.dirname(fullPath);
 
     if (!fs.existsSync(dir)){
       await fs.promises.mkdir(dir, { recursive: true });
     }
 
-    await fs.promises.writeFile(path.join(dir, filename), data);
+    await fs.promises.writeFile(fullPath, data);
   }
 
   async exportTopicSummaries(topics: TopicData): Promise<void> {
     for (const [topic, { summary_text }] of Object.entries(topics)) {
-      await this.exportToFile(`${topic}.md`, summary_text);
+      await this.exportToFile(`topic/${topic}.md`, summary_text);
     }
   }
 
   async exportEntities(entities: Record<string, string>): Promise<void> {
     for (const [entity, summary] of Object.entries(entities)) {
-      await this.exportToFile(`${entity}.md`, summary);
+      await this.exportToFile(`entity/${entity}.md`, summary);
     }
   }
 

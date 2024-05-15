@@ -96,13 +96,12 @@ class InputProcessor {
     const summary_text: string = this.interpreter.summary(generatedSummary);
     const entity_type = '';
     const previous_entities: any = [];
-    const existing_entities_used: string[] =
-      await this.interpreter.existingEntities(generatedSummary, entity_type, previous_entities );
-    const new_entities: string[] = this.interpreter.newEntities(
-      generatedSummary,
-      raw_new_entities,
-    );
+    const entities =
+      await this.interpreter.entities(generatedSummary, entity_type, previous_entities );
+    console.log("existing_entities_used")
+    console.log(entities)
 
+    const { existing_entities: existing_entities_used, new_entities} = entities;
     return {
       summary_text,
       existing_entities_used,

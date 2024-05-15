@@ -22,18 +22,30 @@ class Interpreter {
     return Topics;
   }
   summary(generatedSummary: string): string {
-    return generatedSummary;
+    const splitText = generatedSummary.split('ENTITIES:');
+    return splitText[0];
   }
 
-  async existingEntities(generatedSummary: string, entity_type: string, previous_entities: string[]): Promise<string[]> {
-    const prompt_data = {
-      entity_type,
-      previous_entities,
-      summary: generatedSummary
+
+  
+  async entities(generatedSummary: string, entity_type: string, previous_entities: string[]): Promise<{
+    new_entities: string[]; existing_entities: string[]; 
+  }> {
+    let identifiedEntities = {
+      new_entities: [],
+      existing_entities: [],
     };
-    const { system, user } = this.builder.generateIdentityEntitiesPrompt(prompt_data);
-    const identifiedEntities = await this.llm.generate(system, user);
-    return identifiedEntities ? parse(identifiedEntities) : [];
+
+    const splitText = generatedSummary.split('ENTITIES:');
+    if (splitText.length > 1) {
+      const entitiesText = splitText[1];
+      try {
+        identifiedEntities = parse(entitiesText);
+      } catch (error) {
+        console.error('Failed to parse entities from text:', error);
+      }
+    }
+    return identifiedEntities;
   }
 
   newEntities(generatedSummary: string, raw_new_entities: string[]): string[] {
@@ -52,10 +64,20 @@ class FakeInterpreter extends Interpreter {
     return faker.lorem.paragraph();
   }
 
-  async existingEntities(generatedSummary: string, entity_type: string, previous_entities: string[]): Promise<string[]> {
-    return Promise.resolve(Array(5)
-      .fill(null)
-      .map(() => faker.hacker.noun()));
+  async entities(generatedSummary: string, entity_type: string, previous_entities: string[]): Promise<{
+    new_entities: string[];
+    existing_entities: string[];
+}> {
+
+    const identifiedEntities = {
+      new_entities: Array(5)
+        .fill(null)
+        .map(() => faker.hacker.noun()),
+      existing_entities: Array(5)
+        .fill(null)
+        .map(() => faker.hacker.noun()),
+    };
+    return Promise.resolve(identifiedEntities);
   }
 
   newEntities(generatedSummary: string, raw_new_entities: string[]): string[] {

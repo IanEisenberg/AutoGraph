@@ -48,7 +48,7 @@ const main = async () => {
 
 const tester = async () => {
   // setup dependencies
-  const engine = new OpenAIEngine('gpt-4'); 
+  const engine = new OpenAIEngine('gpt-4o'); 
 //   const engine = new OllamaEngine();
   const llm = new LLM(engine);
   const processor = new InputProcessor(llm,  { perInstance: true });
@@ -71,6 +71,21 @@ const tester = async () => {
   // process topics for each topic generate summaries
   const topic_data = await processor.processTopics(inputs, [topics_1[0]]);
   console.log('Topic Data:', topic_data);
+
+  // generate entity-summary map
+  const { existing_entities, new_entities } = processor.generateEntitySummaryMap(topic_data);
+  console.log('Existing Entities:', existing_entities);
+  console.log('New Entities:', new_entities);
+
+  // update each new or updated entity
+  const { updated_entities, created_entities } = await processor.processEntities(topic_data, existing_entities, new_entities);
+  console.log('Updated Entities:', updated_entities);
+  console.log('Created Entities:', created_entities);
+
+    //   // update data
+    await processor.exportTopicSummaries(topic_data);
+    await processor.exportEntities(created_entities);
+
 };
 
 tester()
