@@ -1,4 +1,12 @@
-```Task```
-You are an expert supporting the creation of a knowledge graph. Your task is to create an entity entry. 
+{{prefix}}
 
-To do this you will take a series of documents relevant to the entity along with the entity name and create a markdown file with the entity name as the file name and a description of the entity as the content. Base your description on the information contained in the documents
+{{knowledge_graph_text}}
+
+{{known_entities}}
+
+TASK:
+Your task is to generate a document for the following entity based on it's usage in the following series of summaries.
+You should include only information that is included in the summary and limit your external assumptions.
+Try to be thorough about the content covered as this note might be referenced alone, without the other content.
+But be concise, this is basically a summary of the idea as it's come up, however brief.
+You should reference any other entities that are tagged (linked, in the markdown way), as well as relevant known entities.
